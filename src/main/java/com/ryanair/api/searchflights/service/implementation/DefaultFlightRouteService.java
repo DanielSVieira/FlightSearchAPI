@@ -11,10 +11,12 @@ import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ryanair.api.searchflights.clientservice.ScheduleClientService;
 import com.ryanair.api.searchflights.datatransferobject.AirportScheduleDTO;
 import com.ryanair.api.searchflights.datatransferobject.FilterFlightsDTO;
 import com.ryanair.api.searchflights.datatransferobject.FlightLegDTO;
 import com.ryanair.api.searchflights.datatransferobject.FlightRouteDTO;
+import com.ryanair.api.searchflights.datatransferobject.MonthScheduleDTO;
 import com.ryanair.api.searchflights.domainvalues.DirectionRouteValue;
 import com.ryanair.api.searchflights.mapper.FlightLegMapper;
 import com.ryanair.api.searchflights.service.AirportScheduleService;
@@ -27,6 +29,9 @@ public class DefaultFlightRouteService implements FlightRouteService {
 	
 	@Autowired
 	private AirportScheduleService airportScheduleService;
+	
+	@Autowired
+	private ScheduleClientService scheduleClientService;
 	
 	
 	@Override
@@ -88,8 +93,9 @@ public class DefaultFlightRouteService implements FlightRouteService {
 
 		List<AirportScheduleDTO> schedules = new LinkedList<>();
 		while (date.isBefore(arrivalDate)) {
+			MonthScheduleDTO monthScheduleDTO = scheduleClientService.requestMonthSchedule(departureAirport, arrivalAirport, date.getYear(), date.getMonthOfYear());
 			schedules.addAll(filterSchedules(
-					airportScheduleService.getSchedules(departureAirport, arrivalAirport, date.getYear(), date.getMonthOfYear()),
+					airportScheduleService.getSchedules(departureAirport, arrivalAirport, date.getYear(), date.getMonthOfYear(), monthScheduleDTO),
 					departureDateTime, arrivalDateTime));
 
 			date = date.plusMonths(1);
@@ -104,8 +110,9 @@ public class DefaultFlightRouteService implements FlightRouteService {
 
 		List<AirportScheduleDTO> schedules = new LinkedList<>();
 		while (departureDate.isBefore(arrivalDate)) {
+			MonthScheduleDTO monthSchedule = scheduleClientService.requestMonthSchedule(filterFlightDTO.getDeparture(), filterFlightDTO.getArrival(), departureDate.getYear(), departureDate.getMonthOfYear());
 			schedules.addAll(filterSchedules(
-					airportScheduleService.getSchedules(filterFlightDTO.getDeparture(), filterFlightDTO.getArrival(), departureDate.getYear(), departureDate.getMonthOfYear()),
+					airportScheduleService.getSchedules(filterFlightDTO.getDeparture(), filterFlightDTO.getArrival(), departureDate.getYear(), departureDate.getMonthOfYear(), monthSchedule),
 					filterFlightDTO.getDepartureTime(), filterFlightDTO.getArrivalTime()));
 
 			departureDate = departureDate.plusMonths(1);

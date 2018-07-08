@@ -3,6 +3,7 @@ package com.ryanair.api.searchflights.clientservice.implementation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class DefaultScheduleClientService implements ScheduleClientService {
 	
 
 	@Override
+	@Cacheable(cacheNames = "SCHEDULE-CACHE") 
 	public MonthScheduleDTO requestMonthSchedule(String fromAirport, String toAirport, int year, int month) {
         Map<String, String> uriParams = new HashMap<>();
         uriParams.put("departure", fromAirport);
