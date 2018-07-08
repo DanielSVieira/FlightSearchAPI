@@ -7,7 +7,7 @@ The goal of this project is search available flights from point A to point B. It
 go to ${projectRoot}/
 
 
-execute the script mvnw using the command below:
+execute the project using the command below:
 
 ```
 mvn -f spring-boot:run
@@ -21,3 +21,14 @@ http://localhost:8080/interconnections/departure={IATA_CODE}&arrival={IATA_CODE}
 Example:
 
 http://localhost:8080/interconnections?departure=DUB&arrival=WRO&departureDateTime=2018-08-01T10:00&arrivalDateTime=2018-08-02T22:00
+
+
+
+## Generatin WAR file
+
+go to ${projectRoot}/
+
+
+execute a command below:
+
+mvn package
